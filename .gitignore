@@ -6,9 +6,10 @@
 *.tmp
 *.txt
 data/lmdb_data/train/*.mdb
+data/lmdb_data/val/*.mdb
 
-data/origin_data
-!data/origin_data/demo.png
+/data/origin_data/
+!/data/origin_data/demo.png
 
 *.rar
 
