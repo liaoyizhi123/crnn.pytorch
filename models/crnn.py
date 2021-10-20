@@ -1,4 +1,5 @@
 import torch.nn as nn
+from absl import logging
 
 
 class BidirectionalLSTM(nn.Module):
@@ -9,7 +10,7 @@ class BidirectionalLSTM(nn.Module):
         self.rnn = nn.LSTM(nIn, nHidden, bidirectional=True)
         self.embedding = nn.Linear(nHidden * 2, nOut)
 
-    def forward(self, input):
+    def forward(self, input): #input[26,4,512] (w,b,c)
         recurrent, _ = self.rnn(input)
         T, b, h = recurrent.size()
         t_rec = recurrent.view(T * b, h)
@@ -68,12 +69,14 @@ class CRNN(nn.Module):
     def forward(self, input):
         # conv features
         conv = self.cnn(input)
+        logging.info(conv.shape)
         b, c, h, w = conv.size()
         assert h == 1, "the height of conv must be 1"
         conv = conv.squeeze(2)
         conv = conv.permute(2, 0, 1)  # [w, b, c]
 
         # rnn features
-        output = self.rnn(conv)
+        output = self.rnn(conv) #[26,4,11]
+        logging.info(output.shape,"---------------------------------------")
 
         return output

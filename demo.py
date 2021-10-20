@@ -7,11 +7,11 @@ from PIL import Image
 import models.crnn as crnn
 
 
-model_path = './data/crnn.pth'
-img_path = './data/demo.png'
-alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+model_path = 'expr/netCRNN_199.pth'
+img_path = 'data/origin_data_val/101.png'
+alphabet = '0123456789'
 
-model = crnn.CRNN(32, 1, 37, 256)
+model = crnn.CRNN(32, 1, 11, 256)  #第二个参数1代表input的channel，1是灰度图
 if torch.cuda.is_available():
     model = model.cuda()
 print('loading pretrained model from %s' % model_path)
