@@ -1,5 +1,6 @@
 Convolutional Recurrent Neural Network
 ======================================
+解决一些兼容性问题，并训练专门用于识别digital number的模型
 
 This software implements the Convolutional Recurrent Neural Network (CRNN) in pytorch.
 Origin software could be found in [crnn](https://github.com/bgshih/crnn)
