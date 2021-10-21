@@ -5,13 +5,14 @@ import dataset
 from PIL import Image
 
 import models.crnn as crnn
+import models.crnn_lite as crnn_lite
 
-
-model_path = 'expr/netCRNN_199.pth'
-img_path = 'data/origin_data_val/101.png'
+model_path = 'expr_lite/netCRNN_199.pth'
+img_path = 'data/origin_data_val/100.png'
 alphabet = '0123456789'
 
-model = crnn.CRNN(32, 1, 11, 256)  #第二个参数1代表input的channel，1是灰度图
+# model = crnn_lite.CRNN(32, 1, 11, 256)
+model = crnn_lite.CRnn(32, 1, 11, 256)  #第二个参数1代表input的channel，1是灰度图
 if torch.cuda.is_available():
     model = model.cuda()
 print('loading pretrained model from %s' % model_path)

@@ -22,7 +22,9 @@ class BidirectionalLSTM(nn.Module):
 
 
 class CRNN(nn.Module):
-
+    # nc 表示第一个convRelu的nIn,为1
+    # nclass会决定第二个LSTM的输出维度
+    # opt.nh LSTM的hidden layer
     def __init__(self, imgH, nc, nclass, nh, n_rnn=2, leakyRelu=False):
         super(CRNN, self).__init__()
         assert imgH % 16 == 0, 'imgH has to be a multiple of 16'

@@ -28,7 +28,7 @@ class strLabelConverter(object):
         for i, char in enumerate(alphabet):
             # NOTE: 0 is reserved for 'blank' required by wrap_ctc
             self.dict[char] = i + 1
-
+            #key是字符  val是字符在alphabet中的位置
     def encode(self, text):
         """Support batch or single str.
 
@@ -51,7 +51,7 @@ class strLabelConverter(object):
             text, _ = self.encode(text)
         return (torch.IntTensor(text), torch.IntTensor(length))
 
-    def decode(self, t, length, raw=False):
+    def decode(self, t, length, raw=False): #t是每个T的预测，总共有26个T ,
         """Decode encoded texts back into strs.
 
         Args:
