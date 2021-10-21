@@ -101,7 +101,12 @@ class CRnn(nn.Module):
         b, c, h, w = conv.size()
 
         #assert h == 1, "the height of conv must be 1"
-        conv = conv.squeeze(2)
+
+        ###Yizhi Liao, support ncnn {
+        #conv = conv.squeeze(2)
+        conv = conv.view(b, c, w)
+        ###Yizhi Liao, support ncnn }
+
         conv = conv.permute(2, 0, 1)  # [w, b, c]
         if self.lstmFlag:
             # rnn features
