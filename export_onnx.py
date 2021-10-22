@@ -60,18 +60,18 @@ def convert(pth_file_path, onnx_path):
     #              将actual_input_1的第1个值改为-1,本来这个位置是batch_size,
 
     torch.onnx.export(model, dummy_input, onnx_path,
-                      input_names=input_names, dynamic_axes=dynamic_axes,
-                      output_names=output_names, opset_version=11)
+                      input_names=input_names,
+                      output_names=output_names, opset_version=11, keep_initializers_as_inputs=True)
 
 
-def test_onnx(path):
-    session = onnxruntime.InferenceSession(path)
+def test_onnx(onnx_path, imgPath):
+    session = onnxruntime.InferenceSession(onnx_path)
 
     session.get_modelmeta()
     first_input_name = session.get_inputs()[0].name
     first_output_name = session.get_outputs()[0].name
 
-    input = get_and_preprocessImg()
+    input = get_and_preprocessImg(imgPath)
 
     results = session.run([], {first_input_name: input.numpy()})
     pred = results[0].argmax(2)#(26,1)
@@ -83,9 +83,9 @@ def test_onnx(path):
     sim_pred = converter.decode(pred_tensor, preds_size_tensor, raw=False)
     print('{:20s} => {:3s}'.format(raw_pred, sim_pred))
 
-def get_and_preprocessImg():
+def get_and_preprocessImg(imgPath):
     transformer = dataset.resizeNormalize((100, 32))
-    image = Image.open("data/origin_data_val/101.png")
+    image = Image.open(imgPath)
     image = image.convert('L')
     image = transformer(image)
     return image.view(1, *image.size())
@@ -96,7 +96,9 @@ def simply_onnx():
     in_path = "onnx/crnn_lite.onnx"
     output_path = "onnx/simply/crnn_lite_simply.onnx"
     onnx_model = onnx.load(in_path)  # load onnx model
-    model_simp, check = simplify(onnx_model, dynamic_input_shape=True, input_shapes={"actual_input_1": [1, 1, 32, 100]})
+    # model_simp, check = simplify(onnx_model, dynamic_input_shape=True, input_shapes={"actual_input_1": [1, 1, 32, 100]})
+    model_simp, check = simplify(onnx_model)
+
     assert check, "Simplified ONNX model could not be validated"
     onnx.save(model_simp, output_path)
     print('finished exporting onnx')
@@ -109,10 +111,10 @@ if __name__ == "__main__":
     # convert(pth_file_path, onnx_path)
 
     ###2
-    #test_onnx("onnx/crnn_lite.onnx")
+    #test_onnx(onnx_path="onnx/simply/crnn_lite_simply.onnx", imgPath="data/origin_data_val/505.png")
 
     ###3
     #还需要使用pip install onnx-simplifier简化
-    simply_onnx()
-
+    #simply_onnx()
+    #
     pass
